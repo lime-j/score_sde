@@ -228,7 +228,7 @@ def get_step_fn(sde, model, train, optimize_fn=None, reduce_mean=False, continuo
       (loss, new_model_state), grad = grad_fn(step_rng, params, states, batch)
       grad = jax.lax.pmean(grad, axis_name='batch')
       new_optimizer = optimize_fn(state, grad)
-      new_params_ema = jax.tree_multimap(
+      new_params_ema = jax.tree_util.tree_map(
         lambda p_ema, p: p_ema * state.ema_rate + p * (1. - state.ema_rate),
         state.params_ema, new_optimizer.target
       )
