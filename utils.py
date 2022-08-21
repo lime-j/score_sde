@@ -24,7 +24,7 @@
 
 import math
 from typing import Any, Dict, Optional, TypeVar
-
+import numpy as np
 import flax
 import jax
 import jax.numpy as jnp
@@ -90,14 +90,15 @@ def save_image(ndarray, fp, nrow=8, padding=2, pad_value=0.0, format=None):
     for x in range(xmaps):
       if k >= nmaps:
         break
-      grid = jax.ops.index_update(
-        grid, jax.ops.index[y * height + padding:(y + 1) * height,
-              x * width + padding:(x + 1) * width], ndarray[k])
+        grid = grid.at[jax.ops.index[y * height + padding:(y + 1) * height,
+              x * width + padding:(x + 1) * width]].set(ndarray[k])
+        # grid, jax.ops.index[y * height + padding:(y + 1) * height,
+        #       x * width + padding:(x + 1) * width], ndarray[k])
       k = k + 1
 
   # Add 0.5 after unnormalizing to [0, 255] to round to nearest integer
   ndarr = jnp.clip(grid * 255.0 + 0.5, 0, 255).astype(jnp.uint8)
-  im = Image.fromarray(ndarr.copy())
+  im = Image.fromarray(np.array(ndarr.copy()))
   im.save(fp, format=format)
 
 

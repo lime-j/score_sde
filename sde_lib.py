@@ -254,3 +254,10 @@ class VESDE(SDE):
     f = jnp.zeros_like(x)
     G = jnp.sqrt(sigma ** 2 - adjacent_sigma ** 2)
     return f, G
+
+class HeatDissipation(SDE):
+  def __init__(self, sigma, delta):
+    self.sigma = sigma
+    self.delta = delta
+  
+  # def blur(self, x):
